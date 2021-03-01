@@ -36,7 +36,8 @@ class Aircraft:
         self.icao = icao
         self.messages = 0
         self.last_message_time = 0
-        self.last_position_time = 0
+        self.last_even_time = 0
+        self.last_odd_time = 0
         self.even_message = None
         self.odd_message = None
         self.reported = False
@@ -81,7 +82,7 @@ class Coordinator:
             _modes.DF_MODEAC: self.received_modeac
         }
         self.next_report = None
-        self.next_stats = monotonic_time() + self.stats_interval
+        self.next_stats = monotonic_time() + 60
         self.next_profile = monotonic_time()
         self.next_aircraft_update = self.last_aircraft_update = monotonic_time()
         self.recent_jumps = 0
@@ -211,7 +212,7 @@ class Coordinator:
             if ac.messages < 2:
                 continue
 
-            if now - ac.last_position_time < self.position_expiry_age:
+            if now - ac.last_even_time < self.position_expiry_age or now - ac.last_odd_time < self.position_expiry_age:
                 adsb_total += 1
                 if ac.requested:
                     adsb_req += 1
@@ -288,7 +289,7 @@ class Coordinator:
         mlat = set()
         for icao in self.requested_traffic:
             ac = self.aircraft.get(icao)
-            if not ac or (now - ac.last_position_time > self.position_expiry_age):
+            if not ac or now - ac.last_even_time < self.position_expiry_age or now - ac.last_odd_time < self.position_expiry_age:
                 # requested, and we have not seen a recent ADS-B message from it
                 mlat.add(icao)
 
@@ -365,7 +366,7 @@ class Coordinator:
             return
 
         # Candidate for MLAT
-        if now - ac.last_position_time < self.position_expiry_age:
+        if now - ac.last_even_time < self.position_expiry_age or now - ac.last_odd_time < self.position_expiry_age:
             return   # reported position recently, no need for mlat
         self.server.send_mlat(message)
 
@@ -389,7 +390,7 @@ class Coordinator:
             return
 
         # Candidate for MLAT
-        if now - ac.last_position_time < self.position_expiry_age:
+        if now - ac.last_even_time < self.position_expiry_age or now - ac.last_odd_time < self.position_expiry_age:
             return   # reported position recently, no need for mlat
         self.server.send_mlat(message)
 
@@ -413,6 +414,10 @@ class Coordinator:
             # not a position message
             return
 
+        if not message.valid:
+            # invalid message
+            return
+
         if message.even_cpr:
             ac.even_message = message
         else:
@@ -426,7 +431,8 @@ class Coordinator:
         if message.altitude is None:
             return    # need an altitude
 
-        ac.last_position_time = now
+        ac.last_even_time = now
+        ac.last_odd_time = now
 
         if message.nuc < 6:
             return    # need NUCp >= 6
