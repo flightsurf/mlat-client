@@ -65,7 +65,7 @@ location pin from the coverage maps.""",
     server.add_argument('--server',
                         help="host:port of the multilateration server to connect to",
                         type=options.hostport,
-                        default=('feed.adsbexchange.com', 31090))
+                        default=('feed.flightsurf.io', 31090))
     server.add_argument('--no-udp',
                         dest='udp',
                         help="Don't offer to use UDP transport for sync/mlat messages",
@@ -110,7 +110,7 @@ location pin from the coverage maps.""",
     if args.uuid_path is not None:
         uuid_path = [ args.uuid_path ]
     else:
-        uuid_path = [ '/usr/local/share/adsbexchange/adsbx-uuid', '/boot/adsbx-uuid' ]
+        uuid_path = [ '/usr/local/share/flightsurf/flightsurf-uuid', '/boot/flightsurf-uuid' ]
 
     server = JsonServerConnection(host=args.server[0],
                                   port=args.server[1],

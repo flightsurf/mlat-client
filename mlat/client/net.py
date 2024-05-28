@@ -55,14 +55,14 @@ class ReconnectingConnection(LoggingMixin, asyncore.dispatcher):
         self.host = host
         self.port = port
         # check port as well, if port doesn't match, could be direct MLAT
-        if self.host == 'feed.adsbexchange.com' and port == 31090:
-            self.adsbexchange = True
+        if self.host == 'feed.flightsurf.io' and port == 31090:
+            self.flightsurf = True
         else:
-            self.adsbexchange = False
-        self.adsbexchangePortIndex = 0
-        self.adsbexchangeHostIndex = 0
-        self.adsbexchangePorts = [ 31090, 64590 ]
-        self.adsbexchangeHosts = [ 'feed1.adsbexchange.com', 'feed2.adsbexchange.com' ]
+            self.flightsurf = False
+        self.flightsurfPortIndex = 0
+        self.flightsurfHostIndex = 0
+        self.flightsurfPorts = [ 31090, 64590 ]
+        self.flightsurfHosts = [ 'feed.flightsurf.io', 'feed.flightsurf.io' ]
         self.addrlist = []
         self.state = 'disconnected'
         self.reconnect_at = None
@@ -139,11 +139,11 @@ class ReconnectingConnection(LoggingMixin, asyncore.dispatcher):
 
             if len(self.addrlist) == 0:
                 # ran out of addresses to try, resolve it again
-                if self.adsbexchange:
-                    self.adsbexchangePortIndex  = (self.adsbexchangePortIndex + 1) % len(self.adsbexchangePorts)
-                    self.adsbexchangeHostIndex  = (self.adsbexchangeHostIndex + 1) % len(self.adsbexchangeHosts)
-                    self.host = self.adsbexchangeHosts[self.adsbexchangeHostIndex];
-                    self.port = self.adsbexchangePorts[self.adsbexchangePortIndex];
+                if self.flightsurf:
+                    self.flightsurfPortIndex  = (self.flightsurfPortIndex + 1) % len(self.flightsurfPorts)
+                    self.flightsurfHostIndex  = (self.flightsurfHostIndex + 1) % len(self.flightsurfHosts)
+                    self.host = self.flightsurfHosts[self.flightsurfHostIndex];
+                    self.port = self.flightsurfPorts[self.flightsurfPortIndex];
 
                 self.addrlist = socket.getaddrinfo(host=self.host,
                                                    port=self.port,
