@@ -5,14 +5,14 @@ server that resolves the transmitter position by multilateration of the same
 message received by multiple clients.
 
 The corresponding server code is available at
-https://github.com/wiedehopf/mlat-server.
+https://github.com/flightsurf/mlat-server.
 
 ## Building
 
 Due to conflicting packages with the same name, it's recommended to install in a Python virtual environment.
 First set the direcory you'd like to install to, if that path is not writeable by your user, use `sudo su` to become root first.
 ```
-VENV=/usr/local/share/wiedehopf-mlat-client/venv
+VENV=/usr/local/share/flightsurf-mlat-client/venv
 ```
 Now the build / install, it's not a bad idea to recreate the virtual environment when rebuilding:
 ```
@@ -28,7 +28,7 @@ Or you can run install.sh provided in this repository.
 
 To run it, invoke:
 ```
-/usr/local/share/wiedehopf-mlat-client/venv/bin/mlat-client
+/usr/local/share/flightsurf-mlat-client/venv/bin/mlat-client
 ```
 
 
@@ -51,20 +51,3 @@ server's administrator for configuration instructions.
 * The FlightRadar24 radarcape-based receiver. This produces a deliberately
 crippled timestamp in its output, making it useless for multilateration.
 If you have one of these, you should ask FR24 to fix this.
-
-## License
-
-Copyright 2015, [Oliver Jowett](mailto:oliver@mutability.co.uk).
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received [a copy of the GNU General Public License](COPYING)
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
